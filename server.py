@@ -142,7 +142,7 @@ class StreamDeckState:
         """Load saved pages and button configs from disk."""
         if PAGES_FILE.exists():
             try:
-                data = json.loads(PAGES_FILE.read_text())
+                data = json.loads(PAGES_FILE.read_text(encoding="utf-8"))
                 if isinstance(data, dict) and "main" in data:
                     self.pages = data
                     logger.info(f"Loaded {len(self.pages)} pages from disk")
@@ -152,7 +152,7 @@ class StreamDeckState:
 
         if BUTTONS_FILE.exists():
             try:
-                data = json.loads(BUTTONS_FILE.read_text())
+                data = json.loads(BUTTONS_FILE.read_text(encoding="utf-8"))
                 if isinstance(data, dict):
                     self.button_callbacks = data
                     logger.info(f"Loaded button configs for {len(self.button_callbacks)} pages")
@@ -163,8 +163,10 @@ class StreamDeckState:
     def _save_state(self) -> None:
         """Persist current state to disk."""
         try:
-            PAGES_FILE.write_text(json.dumps(self.pages, indent=2))
-            BUTTONS_FILE.write_text(json.dumps(self.button_callbacks, indent=2))
+            PAGES_FILE.write_text(json.dumps(self.pages, indent=2), encoding="utf-8")
+            BUTTONS_FILE.write_text(
+                json.dumps(self.button_callbacks, indent=2), encoding="utf-8"
+            )
         except OSError as e:
             logger.error(f"Failed to save state: {e}")
 
